@@ -2,6 +2,12 @@
 
 无言粉丝应援站静态页面仓库，由 Vercel 部署。
 
+## 预览
+
+[https://kplwuyan.site](https://kplwuyan.site)
+
+![站点预览](snapshot.png)
+
 ## 项目结构
 
 ```

@@ -7,4 +7,4 @@
  */
 
 // API 基础地址
-window.API_BASE_URL = 'http://localhost:8001/api';
+window.API_BASE_URL = 'https://data.kplwuyan.site/api';

@@ -2,10 +2,23 @@
 // 无言粉丝应援站 · 主脚本
 // ============================================
 
-// API 配置（支持环境变量覆盖）
-// 开发环境：http://localhost:8001
-// 生产环境：https://data.kplwuyan.site/api
+// API 配置(支持环境变量覆盖)
+// 开发环境:http://localhost:8001
+// 生产环境:https://data.kplwuyan.site/api
 const API_BASE_URL = window.API_BASE_URL || 'http://localhost:8001';
+
+const MVP_RECORDS = [
+  { date: '2025-12-11', desc: '2025 挑战者杯单败淘汰赛 VS SYG · 马超 MVP' },
+  { date: '2025-12-19', desc: '2025 挑战者杯双败淘汰赛 VS KSG · 关羽、马超、曹操 MVP' },
+  { date: '2025-12-25', desc: '2025 挑战者杯双败淘汰赛 VS 北京WB · 夏洛特 MVP' },
+  { date: '2026-01-15', desc: '2026KPL 春季赛常规赛第一轮 VS 佛山DRG · 狂铁 MVP' },
+  { date: '2026-01-22', desc: '2026KPL 春季赛常规赛第一轮 VS 南通Hero久竞 · 关羽 MVP' },
+  { date: '2026-03-08', desc: '2026KPL 春季赛常规赛第三轮 VS 深圳DYG · 关羽、夏洛特 MVP' },
+  { date: '2026-03-14', desc: '2026KPL 春季赛常规赛第三轮 VS 成都AG超玩会 · 马超 MVP' },
+  { date: '2026-03-18', desc: '2026KPL 春季赛常规赛第三轮 VS 重庆狼队 · 关羽 MVP' },
+  { date: '2026-03-21', desc: '2026KPL 春季赛常规赛第三轮 VS 北京WB · 吕布 MVP' },
+  { date: '2026-03-29', desc: '2026KPL 春季赛季后赛胜者组第一轮 VS 重庆狼队 · 关羽 MVP' },
+];
 
 // 初始化 AOS 动画
 AOS.init({
@@ -74,44 +87,82 @@ function loadHeroes() {
   ];
   const container = document.getElementById('heroesGrid');
   if (container) {
-    container.innerHTML = heroes.map((hero) => `<span class="hero-tag">🏅 ${hero}</span>`).join('');
+    container.innerHTML = heroes.map((hero) => `<span class="hero-tag">🌟 ${hero}</span>`).join('');
   }
 }
 
-// 加载生涯高光时刻
-function loadHighlights() {
-  const highlights = [
-    { date: '2025-12-11', desc: '2025 挑战者杯单败淘汰赛 D6 · 马超 MVP' },
-    { date: '2025-12-19', desc: '2025 挑战者杯双败淘汰赛 D1 · 关羽、马超、曹操 MVP' },
-    { date: '2025-12-25', desc: '2025 挑战者杯双败淘汰赛 D4 · 夏洛特 MVP' },
-    { date: '2026-01-15', desc: '2026KPL 春季赛常规赛第一轮 W1D2 · 狂铁 MVP' },
-    { date: '2026-01-22', desc: '2026KPL 春季赛常规赛第一轮 W2D2 · 关羽 MVP' },
-    { date: '2026-03-08', desc: '2026KPL 春季赛常规赛第三轮 W1D1 · 关羽 MVP' },
-    { date: '2026-03-08', desc: '2026KPL 春季赛常规赛第三轮 W1D4 · 夏洛特 MVP' },
-    { date: '2026-03-14', desc: '2026KPL 春季赛常规赛第三轮 W2D4 · 马超 MVP' },
-    { date: '2026-03-18', desc: '2026KPL 春季赛常规赛第三轮 W3D1 · 关羽 MVP' },
-    { date: '2026-03-21', desc: '2026KPL 春季赛常规赛第三轮 W3D4 · 吕布 MVP' },
-  ];
+// 从职业生涯数据中提取 MVP 高光记录
+function extractMvpHighlights(matchDetails = []) {
+  const highlights = [];
+
+  matchDetails.forEach((match) => {
+    (match.battles_by_bo || []).forEach((battle) => {
+      if (battle.is_mvp) {
+        highlights.push({
+          date: match.match_date,
+          team: match.team_name,
+          opponent: match.opponent_team_name,
+          heroName: battle.hero_name,
+          kda: battle.kda,
+          bo: battle.bo,
+          // is_win: battle.is_win,
+          season_id: match.season_id,
+        });
+      }
+    });
+  });
+  highlights.sort((a, b) => {
+    const t = new Date(b.date) - new Date(a.date);
+    if (t !== 0) return t;
+    return parseInt(b.bo) - parseInt(a.bo);
+  });
+
+  return highlights;
+}
+
+// 渲染高光时刻
+function loadHighlights(matchDetails = []) {
+  // const highlights = extractMvpHighlights(matchDetails);
+  const highlights = MVP_RECORDS.reverse();
   const container = document.getElementById('highlightsList');
-  if (container) {
-    container.innerHTML = highlights
-      .map(
-        (h) => `
-            <div class="highlight-item">
-                <div class="highlight-date">🏆 ${h.date}</div>
-                <div class="highlight-desc">${h.desc}</div>
-            </div>
-        `,
-      )
-      .join('');
+  if (!container) return;
+
+  if (highlights.length === 0) {
+    container.innerHTML = `
+      <div class="highlight-item">
+        <div class="highlight-desc">暂无 MVP 记录</div>
+      </div>
+    `;
+    return;
   }
+  container.innerHTML = highlights
+    .map(
+      (h) => `
+        <div class="highlight-item">
+          <div class="highlight-date">🏆 ${h.date}</div>
+          <div class="highlight-desc">${h.desc}</div>
+        </div>
+        `,
+    )
+    .join('');
+
+  // container.innerHTML = highlights
+  //   .map(
+  //     (h) => `
+  //       <div class="highlight-item">
+  //         <div class="highlight-date">📅 ${h.date} VS ${h.opponent} 第${h.bo}局</div>
+  //         <div class="highlight-desc">🏆 ${h.heroName} MVP · KDA ${h.kda}</div>
+  //       </div>
+  //     `,
+  //   )
+  //   .join('');
 }
 
 // 加载职业生涯时间线
 function loadCareer() {
   const career = [
     { date: '2025-12-09', desc: '以青训破军无言身份首次登上 KPL 赛场' },
-    { date: '2025-12-29', desc: '以青训营状元身份加入 KSG 俱乐部，改名 KSG 无言' },
+    { date: '2025-12-29', desc: '以青训营状元身份加入 KSG 俱乐部,改名 KSG 无言' },
     { date: '2026-01-15', desc: '以 KSG 俱乐部首发对抗路登上 KPL 春季赛' },
   ];
   const container = document.getElementById('careerList');
@@ -129,87 +180,62 @@ function loadCareer() {
   }
 }
 
-// 获取生涯数据（对接 FastAPI）
-async function fetchStats() {
-  const container = document.getElementById('statsGrid');
-  if (!container) return;
-
-  // 显示加载状态
-  container.innerHTML = `
-    <div class="stat-card loading">
-      <div class="skeleton" style="width: 60px; height: 40px; margin: 0 auto"></div>
-    </div>
-    <div class="stat-card loading">
-      <div class="skeleton" style="width: 60px; height: 40px; margin: 0 auto"></div>
-    </div>
-    <div class="stat-card loading">
-      <div class="skeleton" style="width: 60px; height: 40px; margin: 0 auto"></div>
-    </div>
-    <div class="stat-card loading">
-      <div class="skeleton" style="width: 60px; height: 40px; margin: 0 auto"></div>
-    </div>
-  `;
-
+// 请求职业生涯数据(只请求,不渲染)
+async function fetchCareerData() {
   try {
     const response = await fetch(`${API_BASE_URL}/player/career?season_type=all`);
-
-    if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
-    }
-
+    if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
     const result = await response.json();
-
-    if (result.code !== 200) {
-      throw new Error(result.message || '数据加载失败');
-    }
-
-    const data = result.data.career_summary;
-
-    // 根据实际返回的数据结构调整字段映射
-    container.innerHTML = `
-      <div class="stat-card" data-aos="fade-up">
-        <div class="stat-value">${data.matches ?? data.total_matches ?? '--'}</div>
-        <div class="stat-label">出场次数</div>
-      </div>
-      <div class="stat-card" data-aos="fade-up">
-        <div class="stat-value">${data.kills ?? data.total_kills ?? '--'}</div>
-        <div class="stat-label">总击杀</div>
-      </div>
-      <div class="stat-card" data-aos="fade-up">
-        <div class="stat-value">${data.mvp ?? data.mvp_count ?? '--'}</div>
-        <div class="stat-label">MVP 次数</div>
-      </div>
-      <div class="stat-card" data-aos="fade-up">
-        <div class="stat-value">${data.total_assists ?? data.total_assists ?? '--'}</div>
-        <div class="stat-label">总助攻</div>
-      </div>
-    `;
-
-    console.log('[Stats] 数据加载成功:', result.message);
+    if (result.code !== 200) throw new Error(result.message || '数据加载失败');
+    return result.data;
   } catch (error) {
-    console.error('[Stats] 获取数据失败:', error);
-    container.innerHTML = `
-      <div class="stat-card">
-        <div class="stat-value">--</div>
-        <div class="stat-label">数据加载失败</div>
-      </div>
-      <div class="stat-card">
-        <div class="stat-value">--</div>
-        <div class="stat-label">请稍后重试</div>
-      </div>
-      <div class="stat-card">
-        <div class="stat-value">--</div>
-        <div class="stat-label">数据加载失败</div>
-      </div>
-      <div class="stat-card">
-        <div class="stat-value">--</div>
-        <div class="stat-label">请稍后重试</div>
-      </div>
-    `;
+    console.error('[Career] 获取数据失败:', error);
+    return null;
   }
 }
 
-// 获取博客最新文章（对接后端 Halo API 代理）
+// 渲染统计卡片
+function renderStats(careerData) {
+  const container = document.getElementById('statsGrid');
+  if (!container) return;
+
+  if (!careerData) {
+    container.innerHTML = Array(4)
+      .fill(
+        `
+      <div class="stat-card">
+        <div class="stat-value">--</div>
+        <div class="stat-label">数据加载失败</div>
+      </div>
+    `,
+      )
+      .join('');
+    return;
+  }
+
+  const data = careerData.career_summary;
+  container.innerHTML = `
+    <div class="stat-card" data-aos="fade-up">
+      <div class="stat-value">${data.matches ?? data.total_matches ?? '--'}</div>
+      <div class="stat-label">出场次数</div>
+    </div>
+    <div class="stat-card" data-aos="fade-up">
+      <div class="stat-value">${data.kills ?? data.total_kills ?? '--'}</div>
+      <div class="stat-label">总击杀</div>
+    </div>
+    <div class="stat-card" data-aos="fade-up">
+      <div class="stat-value">${data.mvp ?? data.mvp_count ?? '--'}</div>
+      <div class="stat-label">MVP 次数</div>
+    </div>
+    <div class="stat-card" data-aos="fade-up">
+      <div class="stat-value">${data.total_assists ?? '--'}</div>
+      <div class="stat-label">总助攻</div>
+    </div>
+  `;
+  console.log('[Stats] 渲染完成');
+}
+
+// 获取博客最新文章(对接后端 Halo API 代理)
 async function fetchPosts() {
   const container = document.getElementById('blogGrid');
   if (!container) return;
@@ -234,7 +260,7 @@ async function fetchPosts() {
       throw new Error(result.message || '博客加载失败');
     }
 
-    // 后端已精简数据：{ items: [{ title, cover, excerpt, publishTime, permalink }] }
+    // 后端已精简数据:{ items: [{ title, cover, excerpt, publishTime, permalink }] }
     const haloData = result.data;
     const items = haloData.items || [];
 
@@ -257,7 +283,7 @@ async function fetchPosts() {
       const publishTime = item.publishTime;
       const date = publishTime ? new Date(publishTime).toISOString().split('T')[0] : '未知日期';
 
-      // 处理摘要：截断过长文本（最多 120 个字符）
+      // 处理摘要:截断过长文本(最多 120 个字符)
       let excerpt = item.excerpt || '暂无摘要';
       if (excerpt.length > 120) {
         excerpt = excerpt.substring(0, 120) + '...';
@@ -290,11 +316,11 @@ async function fetchPosts() {
     console.log('[Posts] 博客加载成功:', result.message);
   } catch (error) {
     console.error('[Posts] 获取博客失败:', error);
-    // 错误时显示默认文章（降级处理）
+    // 错误时显示默认文章(降级处理)
     const fallbackPosts = [
       {
         title: '博客加载中',
-        excerpt: '正在连接博客数据，请稍后刷新页面重试',
+        excerpt: '正在连接博客数据,请稍后刷新页面重试',
         date: new Date().toISOString().split('T')[0],
         cover: 'https://picsum.photos/400/200?random=1',
       },
@@ -328,7 +354,7 @@ function getAge() {
   const monthDiff = today.getMonth() - birthDate.getMonth();
   const dayDiff = today.getDate() - birthDate.getDate();
 
-  // 如果当前月份小于出生月份，或者月份相等但日期还没到，年龄减一
+  // 如果当前月份小于出生月份,或者月份相等但日期还没到,年龄减一
   if (monthDiff < 0 || (monthDiff === 0 && dayDiff < 0)) {
     age--;
   }
@@ -337,12 +363,12 @@ function getAge() {
   // 先设定今年的生日
   let nextBirthday = new Date(today.getFullYear(), birthDate.getMonth(), birthDate.getDate());
 
-  // 如果今年的生日已经过了，就计算明年的生日
+  // 如果今年的生日已经过了,就计算明年的生日
   if (today > nextBirthday) {
     nextBirthday.setFullYear(today.getFullYear() + 1);
   }
 
-  // 计算时间差（毫秒），然后转为天数
+  // 计算时间差(毫秒),然后转为天数
   // 1 天 = 24 小时 * 60 分钟 * 60 秒 * 1000 毫秒
   const diffTime = nextBirthday - today;
   const daysUntilBirthday = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
@@ -358,7 +384,7 @@ async function fetchPhotos() {
   const container = document.getElementById('photoGallery');
   if (!container) return;
 
-  // 显示加载状态（骨架屏）
+  // 显示加载状态(骨架屏)
   container.innerHTML = `
     <div class="photo-item loading"></div>
     <div class="photo-item loading"></div>
@@ -389,7 +415,7 @@ async function fetchPhotos() {
       container.innerHTML = `
         <div class="photo-item" style="grid-column: 1 / -1; text-align: center; padding: 3rem; color: var(--text-muted);">
           <p>暂无照片</p>
-          <p style="margin-top: 0.5rem; font-size: 0.85rem;">照片正在上传中～</p>
+          <p style="margin-top: 0.5rem; font-size: 0.85rem;">照片正在上传中~</p>
         </div>
       `;
       return;
@@ -400,9 +426,9 @@ async function fetchPhotos() {
       .map(
         (photo) => `
         <div class="photo-item" onclick="openLightbox('${photo.url}', '${photo.title.replace(/'/g, "\\'")}')">
-          <img 
-            src="${photo.thumb_url}" 
-            alt="${photo.title}" 
+          <img
+            src="${photo.thumb_url}"
+            alt="${photo.title}"
             loading="lazy"
             onerror="this.onerror=null; this.src='https://picsum.photos/400/400?random=${Math.random()}';"
           >
@@ -465,17 +491,21 @@ document.addEventListener('keydown', (e) => {
 });
 
 // 页面加载时执行
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', async () => {
   loadHeroes();
-  loadHighlights();
   loadCareer();
-  fetchStats();
+
+  // 并行请求：职业生涯数据、博客、照片
+  const [careerData] = await Promise.all([fetchCareerData()]);
+
+  // 数据到达后统一渲染
+  renderStats(careerData);
+  loadHighlights(careerData?.match_details);
+
   fetchPosts();
   fetchPhotos();
 
   const result = getAge();
-  // console.log(`当前：${result.age}岁`);
   console.log(`距离下次生日还有：${result.daysUntilBirthday}天`);
-
   document.getElementById('age').textContent = result.age;
 });
