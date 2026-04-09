@@ -3,9 +3,9 @@
 // ============================================
 
 // API 配置(支持环境变量覆盖)
-// 开发环境:http://localhost:8001
+// 开发环境:http://localhost:8001/api
 // 生产环境:https://data.kplwuyan.site/api
-const API_BASE_URL = window.API_BASE_URL || 'http://localhost:8001';
+const API_BASE_URL = window.API_BASE_URL || 'http://localhost:8001/api';
 
 const MVP_RECORDS = [
   { date: '2025-12-11', desc: '2025 挑战者杯单败淘汰赛 VS SYG · 马超 MVP' },
@@ -191,6 +191,54 @@ async function fetchCareerData() {
   } catch (error) {
     console.error('[Career] 获取数据失败:', error);
     return null;
+  }
+}
+
+// 获取 MVP 时间线数据并渲染
+async function fetchMVPRecords() {
+  try {
+    const response = await fetch(`${API_BASE_URL}/timeline/list?group=timeline-group-wrobzdn0`);
+    if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+    const result = await response.json();
+    if (result.code !== 200) throw new Error(result.message || 'MVP 记录加载失败');
+
+    const records = (result.data && result.data.items) || [];
+    const container = document.getElementById('highlightsList');
+    if (!container) return;
+
+    // console.log('[MVP Records] 获取数据成功:', result.message, records);
+
+    if (records.length === 0) {
+      container.innerHTML = `
+        <div class="highlight-item">
+          <div class="highlight-desc">暂无 MVP 记录</div>
+        </div>
+      `;
+      return;
+    }
+
+    container.innerHTML = records
+      .map(
+        (h) => `
+          <div class="highlight-item">
+            <div class="highlight-date">🏆 ${h.spec.date}</div>
+            <div class="highlight-desc">${h.spec.displayName}</div>
+          </div>
+        `,
+      )
+      .join('');
+
+    console.log('[MVP Records] 加载成功:', result.message);
+  } catch (error) {
+    console.error('[MVP Records] 获取数据失败:', error);
+    const container = document.getElementById('highlightsList');
+    if (container) {
+      container.innerHTML = `
+        <div class="highlight-item">
+          <div class="highlight-desc">MVP 记录加载失败，请稍后刷新页面重试</div>
+        </div>
+      `;
+    }
   }
 }
 
@@ -425,13 +473,13 @@ async function fetchPhotos() {
     container.innerHTML = photos
       .map(
         (photo) => `
-        <div class="photo-item" onclick="openLightbox('${photo.url}', '${photo.title.replace(/'/g, "\\'")}')">
-          <img
+        <div class="photo-item">
+          <a href="${photo.url}" target="_blank"><img
             src="${photo.thumb_url}"
             alt="${photo.title}"
             loading="lazy"
             onerror="this.onerror=null; this.src='https://picsum.photos/400/400?random=${Math.random()}';"
-          >
+          ></a>
         </div>
       `,
       )
@@ -450,58 +498,16 @@ async function fetchPhotos() {
   }
 }
 
-// 打开灯箱
-function openLightbox(url, title) {
-  if (!url) return;
-
-  const lightbox = document.createElement('div');
-  lightbox.className = 'photo-lightbox';
-  lightbox.id = 'photoLightbox';
-  lightbox.onclick = closeLightbox;
-
-  lightbox.innerHTML = `
-    <div class="lightbox-content" onclick="event.stopPropagation()">
-      <button class="lightbox-close" onclick="closeLightbox()">&times;</button>
-      <img src="${url}" alt="${title}" loading="lazy">
-      ${title ? `<div class="lightbox-title">${title}</div>` : ''}
-    </div>
-  `;
-
-  document.body.appendChild(lightbox);
-
-  // 阻止背景滚动
-  document.body.style.overflow = 'hidden';
-}
-
-// 关闭灯箱
-function closeLightbox() {
-  const lightbox = document.getElementById('photoLightbox');
-  if (lightbox) {
-    lightbox.remove();
-    // 恢复背景滚动
-    document.body.style.overflow = '';
-  }
-}
-
-// 键盘 ESC 关闭灯箱
-document.addEventListener('keydown', (e) => {
-  if (e.key === 'Escape') {
-    closeLightbox();
-  }
-});
-
 // 页面加载时执行
 document.addEventListener('DOMContentLoaded', async () => {
   loadHeroes();
   loadCareer();
 
-  // 并行请求：职业生涯数据、博客、照片
-  const [careerData] = await Promise.all([fetchCareerData()]);
+  fetchCareerData().then((data) => {
+    renderStats(data);
+  });
 
-  // 数据到达后统一渲染
-  renderStats(careerData);
-  loadHighlights(careerData?.match_details);
-
+  fetchMVPRecords();
   fetchPosts();
   fetchPhotos();
 
