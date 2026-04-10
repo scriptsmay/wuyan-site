@@ -7,19 +7,6 @@
 // 生产环境:https://data.kplwuyan.site/api
 const API_BASE_URL = window.API_BASE_URL || 'http://localhost:8001/api';
 
-const MVP_RECORDS = [
-  { date: '2025-12-11', desc: '2025 挑战者杯单败淘汰赛 VS SYG · 马超 MVP' },
-  { date: '2025-12-19', desc: '2025 挑战者杯双败淘汰赛 VS KSG · 关羽、马超、曹操 MVP' },
-  { date: '2025-12-25', desc: '2025 挑战者杯双败淘汰赛 VS 北京WB · 夏洛特 MVP' },
-  { date: '2026-01-15', desc: '2026KPL 春季赛常规赛第一轮 VS 佛山DRG · 狂铁 MVP' },
-  { date: '2026-01-22', desc: '2026KPL 春季赛常规赛第一轮 VS 南通Hero久竞 · 关羽 MVP' },
-  { date: '2026-03-08', desc: '2026KPL 春季赛常规赛第三轮 VS 深圳DYG · 关羽、夏洛特 MVP' },
-  { date: '2026-03-14', desc: '2026KPL 春季赛常规赛第三轮 VS 成都AG超玩会 · 马超 MVP' },
-  { date: '2026-03-18', desc: '2026KPL 春季赛常规赛第三轮 VS 重庆狼队 · 关羽 MVP' },
-  { date: '2026-03-21', desc: '2026KPL 春季赛常规赛第三轮 VS 北京WB · 吕布 MVP' },
-  { date: '2026-03-29', desc: '2026KPL 春季赛季后赛胜者组第一轮 VS 重庆狼队 · 关羽 MVP' },
-];
-
 // 初始化 AOS 动画
 AOS.init({
   duration: 800,
@@ -119,45 +106,6 @@ function extractMvpHighlights(matchDetails = []) {
 
   return highlights;
 }
-
-// 渲染高光时刻
-function loadHighlights(matchDetails = []) {
-  // const highlights = extractMvpHighlights(matchDetails);
-  const highlights = MVP_RECORDS.reverse();
-  const container = document.getElementById('highlightsList');
-  if (!container) return;
-
-  if (highlights.length === 0) {
-    container.innerHTML = `
-      <div class="highlight-item">
-        <div class="highlight-desc">暂无 MVP 记录</div>
-      </div>
-    `;
-    return;
-  }
-  container.innerHTML = highlights
-    .map(
-      (h) => `
-        <div class="highlight-item">
-          <div class="highlight-date">🏆 ${h.date}</div>
-          <div class="highlight-desc">${h.desc}</div>
-        </div>
-        `,
-    )
-    .join('');
-
-  // container.innerHTML = highlights
-  //   .map(
-  //     (h) => `
-  //       <div class="highlight-item">
-  //         <div class="highlight-date">📅 ${h.date} VS ${h.opponent} 第${h.bo}局</div>
-  //         <div class="highlight-desc">🏆 ${h.heroName} MVP · KDA ${h.kda}</div>
-  //       </div>
-  //     `,
-  //   )
-  //   .join('');
-}
-
 // 加载职业生涯时间线
 function loadCareer() {
   const career = [
