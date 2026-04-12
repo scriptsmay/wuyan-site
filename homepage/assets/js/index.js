@@ -112,6 +112,7 @@ function loadCareer() {
     { date: '2025-12-09', desc: '以青训破军无言身份首次登上 KPL 赛场' },
     { date: '2025-12-29', desc: '以青训营状元身份加入 KSG 俱乐部,改名 KSG 无言' },
     { date: '2026-01-15', desc: '以 KSG 俱乐部首发对抗路登上 KPL 春季赛' },
+    { date: '2026-04-11', desc: '🏆 随 KSG 出征 2026 KPL 春季赛决赛，以 4:0 横扫重庆狼队，出道首赛季即夺冠' },
   ];
   const container = document.getElementById('careerList');
   if (container) {
