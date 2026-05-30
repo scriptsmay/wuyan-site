@@ -27,30 +27,67 @@ window.addEventListener('scroll', () => {
 // 移动端菜单切换
 function toggleMobileMenu() {
   const navLinks = document.querySelector('.nav-links');
-  if (navLinks.style.display === 'flex') {
-    navLinks.style.display = '';
-    navLinks.style.flexDirection = '';
-    navLinks.style.position = '';
-    navLinks.style.top = '';
-    navLinks.style.left = '';
-    navLinks.style.right = '';
-    navLinks.style.background = '';
-    navLinks.style.padding = '';
-    navLinks.style.gap = '';
-    navLinks.style.borderBottom = '';
-  } else {
-    navLinks.style.display = 'flex';
-    navLinks.style.flexDirection = 'column';
-    navLinks.style.position = 'absolute';
-    navLinks.style.top = '70px';
-    navLinks.style.left = '0';
-    navLinks.style.right = '0';
-    navLinks.style.background = 'var(--bg-dark)';
-    navLinks.style.padding = '1.5rem';
-    navLinks.style.gap = '1rem';
-    navLinks.style.borderBottom = '1px solid var(--border)';
-  }
+  if (!navLinks) return;
+  navLinks.classList.toggle('mobile-open');
 }
+
+// 控制“更多”下拉：移动端点击时切换展开，桌面端仍可通过 hover 展示
+// 控制“更多”下拉：使用类并添加延迟隐藏（防止鼠标移动产生空隙导致收起）
+function toggleMoreDropdown(e) {
+  const more = e
+    ? e.currentTarget.closest('.nav-more')
+    : document.querySelector('.nav-more');
+  if (!more) return;
+  const isOpen = more.classList.toggle('open');
+  const btn = more.querySelector('.more-btn');
+  if (btn) btn.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+  if (e && e.stopPropagation) e.stopPropagation();
+}
+
+// 鼠标进出控制：在移出时延迟一定时间再收起，避免短暂空隙
+(function attachMoreHoverDelay() {
+  const HIDE_DELAY = 120; // ms
+  const timers = new Map();
+  const moreItems = document.querySelectorAll('.nav-more');
+  moreItems.forEach((more) => {
+    const btn = more.querySelector('.more-btn');
+    // 鼠标进入：清除关闭定时器并保持打开
+    more.addEventListener('mouseenter', () => {
+      const t = timers.get(more);
+      if (t) {
+        clearTimeout(t);
+        timers.delete(more);
+      }
+      more.classList.add('open');
+      if (btn) btn.setAttribute('aria-expanded', 'true');
+    });
+
+    // 鼠标离开：延迟关闭
+    more.addEventListener('mouseleave', () => {
+      const timer = setTimeout(() => {
+        more.classList.remove('open');
+        if (btn) btn.setAttribute('aria-expanded', 'false');
+        timers.delete(more);
+      }, HIDE_DELAY);
+      timers.set(more, timer);
+    });
+
+    // 触摸/点击按钮行为仍然以 toggle 控制
+    if (btn) {
+      btn.addEventListener('click', (e) => toggleMoreDropdown(e));
+    }
+  });
+})();
+
+// 点击页面其它位置时收起“更多”下拉（移动端友好）
+document.addEventListener('click', function () {
+  const openMore = document.querySelector('.nav-more.open');
+  if (openMore) {
+    openMore.classList.remove('open');
+    const btn = openMore.querySelector('.more-btn');
+    if (btn) btn.setAttribute('aria-expanded', 'false');
+  }
+});
 
 // ========== 数据加载函数 ==========
 
@@ -74,7 +111,9 @@ function loadHeroes() {
   ];
   const container = document.getElementById('heroesGrid');
   if (container) {
-    container.innerHTML = heroes.map((hero) => `<span class="hero-tag">🌟 ${hero}</span>`).join('');
+    container.innerHTML = heroes
+      .map((hero) => `<span class="hero-tag">🌟 ${hero}</span>`)
+      .join('');
   }
 }
 
@@ -110,9 +149,15 @@ function extractMvpHighlights(matchDetails = []) {
 function loadCareer() {
   const career = [
     { date: '2025-12-09', desc: '以青训破军无言身份首次登上 KPL 赛场' },
-    { date: '2025-12-29', desc: '以青训营状元身份加入 KSG 俱乐部,改名 KSG 无言' },
+    {
+      date: '2025-12-29',
+      desc: '以青训营状元身份加入 KSG 俱乐部,改名 KSG 无言',
+    },
     { date: '2026-01-15', desc: '以 KSG 俱乐部首发对抗路登上 KPL 春季赛' },
-    { date: '2026-04-11', desc: '🏆 随 KSG 出征 2026 KPL 春季赛决赛，以 4:0 横扫重庆狼队，出道首赛季即夺冠' },
+    {
+      date: '2026-04-11',
+      desc: '🏆 随 KSG 出征 2026 KPL 春季赛决赛，以 4:0 横扫重庆狼队，出道首赛季即夺冠',
+    },
   ];
   const container = document.getElementById('careerList');
   if (container) {
@@ -132,7 +177,9 @@ function loadCareer() {
 // 请求职业生涯数据(只请求,不渲染)
 async function fetchCareerData() {
   try {
-    const response = await fetch(`${API_BASE_URL}/player/career?season_type=all`);
+    const response = await fetch(
+      `${API_BASE_URL}/player/career?season_type=all`,
+    );
     if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
     const result = await response.json();
     if (result.code !== 200) throw new Error(result.message || '数据加载失败');
@@ -146,10 +193,13 @@ async function fetchCareerData() {
 // 获取 MVP 时间线数据并渲染
 async function fetchMVPRecords() {
   try {
-    const response = await fetch(`${API_BASE_URL}/timeline/list?group=timeline-group-wrobzdn0`);
+    const response = await fetch(
+      `${API_BASE_URL}/timeline/list?group=timeline-group-wrobzdn0`,
+    );
     if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
     const result = await response.json();
-    if (result.code !== 200) throw new Error(result.message || 'MVP 记录加载失败');
+    if (result.code !== 200)
+      throw new Error(result.message || 'MVP 记录加载失败');
 
     const records = (result.data && result.data.items) || [];
     const container = document.getElementById('highlightsList');
@@ -278,7 +328,9 @@ async function fetchPosts() {
 
       // 处理发布日期
       const publishTime = item.publishTime;
-      const date = publishTime ? new Date(publishTime).toISOString().split('T')[0] : '未知日期';
+      const date = publishTime
+        ? new Date(publishTime).toISOString().split('T')[0]
+        : '未知日期';
 
       // 处理摘要:截断过长文本(最多 120 个字符)
       let excerpt = item.excerpt || '暂无摘要';
@@ -358,7 +410,11 @@ function getAge() {
 
   // 2. 计算距离下一个生日还有几天
   // 先设定今年的生日
-  let nextBirthday = new Date(today.getFullYear(), birthDate.getMonth(), birthDate.getDate());
+  let nextBirthday = new Date(
+    today.getFullYear(),
+    birthDate.getMonth(),
+    birthDate.getDate(),
+  );
 
   // 如果今年的生日已经过了,就计算明年的生日
   if (today > nextBirthday) {

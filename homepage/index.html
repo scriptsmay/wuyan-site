@@ -2,8 +2,14 @@
 <html lang="zh-CN">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-    <meta name="description" content="无言粉丝应援站 - 记录 KPL 选手无言的职业生涯与赛场高光" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, viewport-fit=cover"
+    />
+    <meta
+      name="description"
+      content="无言粉丝应援站 - 记录 KPL 选手无言的职业生涯与赛场高光"
+    />
     <meta name="keywords" content="KPL,无言，王者荣耀，电竞选手，粉丝应援" />
     <meta name="robots" content="index, follow" />
     <title>无言 · 粉丝应援站 | 记录热爱</title>
@@ -22,18 +28,49 @@
     <nav class="navbar" id="navbar">
       <div class="nav-container">
         <div class="logo">无言<span class="logo-sub">· 小盐粒应援站</span></div>
-        <div class="nav-links">
+        <div class="nav-links" role="navigation" aria-label="主导航">
           <a href="#home">首页</a>
           <a href="#profile">关于无言</a>
           <a href="#stats">生涯数据</a>
           <a href="#highlights">高光时刻</a>
           <a href="#photos">照片墙</a>
-          <a href="#blog">记录</a>
           <a href="#support">应援</a>
-          <a href="https://blog.kplwuyan.site" target="_blank" class="nav-btn">📖 博客 →</a>
-          <a href="https://data.kplwuyan.site" target="_blank" class="nav-btn">📊 数据平台 →</a>
+
+          <!-- 精简外部链接到“更多”下拉 -->
+          <div class="nav-more">
+            <button
+              class="more-btn"
+              aria-expanded="false"
+              aria-haspopup="true"
+              onclick="toggleMoreDropdown(event)"
+            >
+              更多 ▾
+            </button>
+            <div class="more-dropdown" role="menu">
+              <a
+                href="https://blog.kplwuyan.site"
+                target="_blank"
+                role="menuitem"
+                >📖 博客</a
+              >
+              <a
+                href="https://data.kplwuyan.site"
+                target="_blank"
+                role="menuitem"
+                >📊 数据平台</a
+              >
+              <a
+                href="https://cal.kplwuyan.site"
+                target="_blank"
+                role="menuitem"
+                >📅 直播日历</a
+              >
+            </div>
+          </div>
         </div>
-        <div class="mobile-menu-btn" onclick="toggleMobileMenu()"><span></span><span></span><span></span></div>
+        <div class="mobile-menu-btn" onclick="toggleMobileMenu()">
+          <span></span><span></span><span></span>
+        </div>
       </div>
     </nav>
 
@@ -81,7 +118,9 @@
               </div>
               <div class="info-item">
                 <div class="info-label">生日</div>
-                <div class="info-value">2007.02.05 (<span id="age">19</span>岁)</div>
+                <div class="info-value">
+                  2007.02.05 (<span id="age">19</span>岁)
+                </div>
               </div>
               <div class="info-item">
                 <div class="info-label">星座/MBTI</div>
@@ -130,7 +169,9 @@
             </div>
             <div class="info-item">
               <div class="info-label">喜欢的动漫</div>
-              <div class="info-value">全职猎人 (奇犽) · 排球少年 (日向翔阳)</div>
+              <div class="info-value">
+                全职猎人 (奇犽) · 排球少年 (日向翔阳)
+              </div>
             </div>
             <div class="info-item">
               <div class="info-label">喜欢的动物</div>
@@ -142,19 +183,32 @@
             </div>
             <div class="info-item">
               <div class="info-label">喜欢的食物</div>
-              <div class="info-value">奶茶 (白雾红尘) · 辣椒炒肉 · 火锅 · 蛋挞 · 黑巧</div>
+              <div class="info-value">
+                奶茶 (白雾红尘) · 辣椒炒肉 · 火锅 · 蛋挞 · 黑巧
+              </div>
             </div>
           </div>
         </div>
 
         <!-- 社交媒体账号 -->
-        <div class="info-card" data-aos="fade-up" data-aos-delay="300" style="margin-top: 1.5rem">
+        <div
+          class="info-card"
+          data-aos="fade-up"
+          data-aos-delay="300"
+          style="margin-top: 1.5rem"
+        >
           <h3>📱 平台账号</h3>
           <div class="social-links-card">
-            <a href="https://weibo.com/n/KSG%E6%97%A0%E8%A8%80_" target="_blank" class="social-link"
+            <a
+              href="https://weibo.com/n/KSG%E6%97%A0%E8%A8%80_"
+              target="_blank"
+              class="social-link"
               >微博：@KSG 无言_</a
             >
-            <a href="https://live.kuaishou.com/profile/3xhpa8nk4a7xdg6" target="_blank" class="social-link"
+            <a
+              href="https://live.kuaishou.com/profile/3xhpa8nk4a7xdg6"
+              target="_blank"
+              class="social-link"
               >快手：KSG 无言 (5226586503)</a
             >
             <a
@@ -181,28 +235,49 @@
         </div>
         <div class="stats-grid" id="statsGrid">
           <div class="stat-card loading">
-            <div class="skeleton" style="width: 60px; height: 40px; margin: 0 auto"></div>
+            <div
+              class="skeleton"
+              style="width: 60px; height: 40px; margin: 0 auto"
+            ></div>
           </div>
           <div class="stat-card loading">
-            <div class="skeleton" style="width: 60px; height: 40px; margin: 0 auto"></div>
+            <div
+              class="skeleton"
+              style="width: 60px; height: 40px; margin: 0 auto"
+            ></div>
           </div>
           <div class="stat-card loading">
-            <div class="skeleton" style="width: 60px; height: 40px; margin: 0 auto"></div>
+            <div
+              class="skeleton"
+              style="width: 60px; height: 40px; margin: 0 auto"
+            ></div>
           </div>
           <div class="stat-card loading">
-            <div class="skeleton" style="width: 60px; height: 40px; margin: 0 auto"></div>
+            <div
+              class="skeleton"
+              style="width: 60px; height: 40px; margin: 0 auto"
+            ></div>
           </div>
         </div>
         <div
           class="data-note"
-          style="text-align: center; margin-top: 1.5rem; font-size: 0.7rem; color: var(--text-muted)"
+          style="
+            text-align: center;
+            margin-top: 1.5rem;
+            font-size: 0.7rem;
+            color: var(--text-muted);
+          "
         >
           📊 数据来源于 KPL 官方赛事统计 · 人工整理
         </div>
 
         <!-- 职业生涯时间线 -->
         <div style="margin-top: 3rem">
-          <h3 style="text-align: center; margin-bottom: 1.5rem; font-size: 1.3rem">📅 职业生涯</h3>
+          <h3
+            style="text-align: center; margin-bottom: 1.5rem; font-size: 1.3rem"
+          >
+            📅 职业生涯
+          </h3>
           <div class="highlights-list" id="careerList"></div>
         </div>
       </div>
@@ -218,20 +293,33 @@
 
         <!-- 国服英雄 -->
         <div style="margin-bottom: 2.5rem">
-          <h3 style="text-align: center; margin-bottom: 1.5rem; font-size: 1.2rem">🏆 国服英雄</h3>
+          <h3
+            style="text-align: center; margin-bottom: 1.5rem; font-size: 1.2rem"
+          >
+            🏆 国服英雄
+          </h3>
           <div class="heroes-grid" id="heroesGrid"></div>
         </div>
 
         <!-- 生涯高光时刻 -->
         <div>
-          <h3 style="text-align: center; margin-bottom: 1.5rem; font-size: 1.2rem">🏅 MVP 时刻</h3>
+          <h3
+            style="text-align: center; margin-bottom: 1.5rem; font-size: 1.2rem"
+          >
+            🏅 MVP 时刻
+          </h3>
           <div class="highlights-list" id="highlightsList"></div>
           <!-- <div style="text-align: center; margin-top: 2rem">
             <span class="tag" style="background: rgba(0, 212, 255, 0.2)">🏆 持续更新中～</span>
           </div> -->
 
           <div style="text-align: center; margin-top: 2rem">
-            <a href="https://data.kplwuyan.site/records" target="_blank" class="btn-primary">📖 查看赛场记录 →</a>
+            <a
+              href="https://data.kplwuyan.site/records"
+              target="_blank"
+              class="btn-primary"
+              >📖 查看赛场记录 →</a
+            >
           </div>
         </div>
       </div>
@@ -255,7 +343,12 @@
           <div class="photo-item loading"></div>
         </div>
         <div style="text-align: center; margin-top: 2rem">
-          <a href="https://blog.kplwuyan.site/photos" target="_blank" class="btn-primary">📷 查看全部照片 →</a>
+          <a
+            href="https://blog.kplwuyan.site/photos"
+            target="_blank"
+            class="btn-primary"
+            >📷 查看全部照片 →</a
+          >
         </div>
       </div>
     </section>
@@ -268,12 +361,23 @@
           <p>赛事回顾 · 训练日常 · 品牌动态</p>
         </div>
         <div class="blog-grid" id="blogGrid">
-          <div class="blog-card loading"><div class="skeleton" style="height: 180px"></div></div>
-          <div class="blog-card loading"><div class="skeleton" style="height: 180px"></div></div>
-          <div class="blog-card loading"><div class="skeleton" style="height: 180px"></div></div>
+          <div class="blog-card loading">
+            <div class="skeleton" style="height: 180px"></div>
+          </div>
+          <div class="blog-card loading">
+            <div class="skeleton" style="height: 180px"></div>
+          </div>
+          <div class="blog-card loading">
+            <div class="skeleton" style="height: 180px"></div>
+          </div>
         </div>
         <div style="text-align: center; margin-top: 2rem">
-          <a href="https://blog.kplwuyan.site" target="_blank" class="btn-primary">📖 阅读全部记录 →</a>
+          <a
+            href="https://blog.kplwuyan.site"
+            target="_blank"
+            class="btn-primary"
+            >📖 阅读全部记录 →</a
+          >
         </div>
       </div>
     </section>
@@ -283,14 +387,25 @@
       <div class="container">
         <div class="support-section" data-aos="fade-up">
           <h2 style="margin-bottom: 1rem">🧂 加入小盐粒大家庭</h2>
-          <p style="color: var(--text-secondary); max-width: 600px; margin: 0 auto">
+          <p
+            style="
+              color: var(--text-secondary);
+              max-width: 600px;
+              margin: 0 auto;
+            "
+          >
             这里是无言的小天地，欢迎各位感兴趣的宝宝加入小盐粒大家庭，<br />
             我们一起在这里陪他成长，共同进步～
           </p>
           <div class="support-buttons">
-            <a href="https://weibo.com/u/8304868021" target="_blank" class="btn-primary">🧂 微博超话</a>
-            <a href="#" class="btn-outline">💬 粉丝群</a>
-            <a href="#" class="btn-outline">🎨 应援活动</a>
+            <a
+              href="https://weibo.com/u/8304868021"
+              target="_blank"
+              class="btn-primary"
+              >🧂 微博超话</a
+            >
+            <!-- <a href="#" class="btn-outline">💬 粉丝群</a>
+            <a href="#" class="btn-outline">🎨 应援活动</a> -->
             <a
               href="https://www.xiaohongshu.com/user/profile/68f51822000000003702c329"
               target="_blank"
@@ -298,8 +413,14 @@
               >📕 小红书</a
             >
           </div>
-          <p style="margin-top: 1.5rem; font-size: 0.85rem; color: var(--text-muted)">
-            后援会：@无言 0205 号言究所 · 官方粉丝群详见微博公告
+          <p
+            style="
+              margin-top: 1.5rem;
+              font-size: 0.85rem;
+              color: var(--text-muted);
+            "
+          >
+            后援会：@无言0205号言究所 · 官方粉丝群详见微博公告
           </p>
         </div>
       </div>
@@ -310,17 +431,30 @@
       <div class="footer-content">
         <div class="social-links-footer">
           <a href="https://weibo.com/u/8304868021" target="_blank">微博</a>
-          <a href="https://live.kuaishou.com/profile/3xhpa8nk4a7xdg6" target="_blank">快手</a>
-          <a href="https://www.xiaohongshu.com/user/profile/68f51822000000003702c329" target="_blank">小红书</a>
-          <a href="https://weibo.com/u/8350314815" target="_blank">后援会微博</a>
+          <a
+            href="https://live.kuaishou.com/profile/3xhpa8nk4a7xdg6"
+            target="_blank"
+            >快手</a
+          >
+          <a
+            href="https://www.xiaohongshu.com/user/profile/68f51822000000003702c329"
+            target="_blank"
+            >小红书</a
+          >
+          <a href="https://weibo.com/u/8350314815" target="_blank"
+            >后援会微博</a
+          >
         </div>
         <div class="copyright">
           <p>© 2026 无言粉丝应援站 · 小盐粒大家庭 · 非官方站点</p>
-          <p style="margin-top: 0.5rem">🏆 用热爱记录成长，用应援传递力量 | 数据来源于 KPL 官方公开资料</p>
+          <p style="margin-top: 0.5rem">
+            🏆 用热爱记录成长，用应援传递力量 | 数据来源于KPL官方公开资料
+          </p>
         </div>
         <div class="disclaimer">
-          ⚠️ 本网站为粉丝应援站，与选手本人及俱乐部无关。所有内容仅用于粉丝交流，不涉及商业用途。<br />
-          后援会：@无言 0205 号言究所 | 让我们一起陪无言成长，共同进步～
+          ⚠️
+          本网站为粉丝应援站，与选手本人及俱乐部无关。所有内容仅用于粉丝交流，不涉及商业用途。<br />
+          后援会：@无言0205号言究所 | 让我们一起陪无言成长，共同进步～
         </div>
       </div>
     </footer>
