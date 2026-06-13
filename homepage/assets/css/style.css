@@ -332,6 +332,39 @@ h3,
   margin-top: 1rem;
 }
 
+/* ========== Days Matter 登场天数 ========== */
+.days-matter {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin: 1.2rem 0;
+  padding: 0.6rem 1.4rem;
+  background: rgba(0, 212, 255, 0.08);
+  border: 1px solid rgba(0, 212, 255, 0.2);
+  border-radius: 100px;
+  backdrop-filter: blur(8px);
+}
+.days-matter-label {
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+}
+.days-matter-number {
+  font-size: 1.8rem;
+  font-weight: 800;
+  color: var(--primary);
+  font-family: 'Space Grotesk', monospace;
+  text-shadow: 0 0 20px var(--primary-glow);
+  min-width: 2.5ch;
+  text-align: center;
+}
+.days-matter-date {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  margin-left: 0.4rem;
+  padding-left: 0.8rem;
+  border-left: 1px solid var(--border);
+}
+
 .hero-buttons {
   display: flex;
   gap: 1rem;

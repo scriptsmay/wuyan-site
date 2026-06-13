@@ -151,7 +151,7 @@ function loadCareer() {
     { date: '2025-12-09', desc: '以青训破军无言身份首次登上 KPL 赛场' },
     {
       date: '2025-12-29',
-      desc: '以青训营状元身份加入 KSG 俱乐部,改名 KSG 无言',
+      desc: '以青训营状元身份加入 KSG 俱乐部,改名 KSG无言',
     },
     { date: '2026-01-15', desc: '以 KSG 俱乐部首发对抗路登上 KPL 春季赛' },
     {
@@ -272,14 +272,13 @@ function renderStats(careerData) {
     </div>
     <div class="stat-card" data-aos="fade-up">
       <div class="stat-value">${data.mvp ?? data.mvp_count ?? '--'}</div>
-      <div class="stat-label">MVP 次数</div>
+      <div class="stat-label">MVP次数</div>
     </div>
     <div class="stat-card" data-aos="fade-up">
       <div class="stat-value">${data.total_assists ?? '--'}</div>
       <div class="stat-label">总助攻</div>
     </div>
   `;
-  console.log('[Stats] 渲染完成');
 }
 
 // 获取博客最新文章(对接后端 Halo API 代理)
@@ -503,8 +502,20 @@ async function fetchPhotos() {
   }
 }
 
+// 计算登场天数
+function updateDaysCount() {
+  const debutDate = new Date('2026-01-15');
+  const today = new Date();
+  debutDate.setHours(0, 0, 0, 0);
+  today.setHours(0, 0, 0, 0);
+  const diffDays = Math.floor((today - debutDate) / (1000 * 60 * 60 * 24));
+  const el = document.getElementById('daysCount');
+  if (el) el.textContent = diffDays;
+}
+
 // 页面加载时执行
 document.addEventListener('DOMContentLoaded', async () => {
+  updateDaysCount();
   loadHeroes();
   loadCareer();
 
